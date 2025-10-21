@@ -14,6 +14,16 @@ const Chapter = require('./Chapter.js');
 const Skill = require('./Skill.js');
 const SkillChapter = require('./SkillChapter.js');
 const DisciplineSkill = require('./DisciplineSkill.js');
+const LinkType = require("./LinkType.js");
+const Resource = require('./Resource.js');
+const Stack = require('./Stack.js');
+const InteractionUserResource = require('./InteractionUserResource.js');
+const InteractionUserStack = require('./InteractionUserStack.js');
+const Comment = require("./Comment.js");
+const ResourceStack = require('./ResourceStack.js');
+const ResourceDevelopmentDirection = require('./ResourceDevelopmentDirection.js');
+const Rating = require('./Rating.js');
+const RatingResource = require('./RatingResource.js');
 
 User.hasOne(Teacher, { foreignKey: 'user_Id' });
 Teacher.belongsTo(User, { foreignKey: 'user_Id' });
@@ -66,6 +76,137 @@ Skill.belongsToMany(Discipline, { through: DisciplineSkill, foreignKey: 'skill_I
 Level.hasMany(DisciplineSkill, { foreignKey: 'level_Id' });
 DisciplineSkill.belongsTo(Level, { foreignKey: 'level_Id' });
 
+User.hasMany(Resource, { foreignKey: 'author_user_Id' });
+Resource.belongsTo(User, {
+  foreignKey: {
+    name: 'author_user_Id',
+    allowNull: true,
+  },
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+User.hasMany(Stack, { foreignKey: 'author_user_Id' });
+Stack.belongsTo(User, {
+  foreignKey: {
+    name: 'author_user_Id',
+    allowNull: true,
+  },
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+LinkType.hasMany(Resource, { foreignKey: 'link_type_Id' });
+Resource.belongsTo(LinkType, {
+  foreignKey: {
+    name: 'link_type_Id',
+    allowNull: true,
+  },
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+User.hasMany(InteractionUserResource, { foreignKey: 'user_Id' });
+InteractionUserResource.belongsTo(User, {
+  foreignKey: {
+    name: 'user_Id',
+    allowNull: true,
+  },
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+Resource.hasMany(InteractionUserResource, { foreignKey: 'resource_Id' });
+InteractionUserResource.belongsTo(Resource, {
+  foreignKey: {
+    name: 'resource_Id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+User.hasMany(InteractionUserStack, { foreignKey: 'user_Id' });
+InteractionUserStack.belongsTo(User, {
+  foreignKey: {
+    name: 'user_Id',
+    allowNull: true,
+  },
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+Stack.hasMany(InteractionUserStack, { foreignKey: 'stack_Id' });
+InteractionUserStack.belongsTo(Stack, {
+  foreignKey: {
+    name: 'stack_Id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+InteractionUserResource.hasMany(Comment, { foreignKey: 'interaction_user_resource_Id' });
+Comment.belongsTo(InteractionUserResource, {
+  foreignKey: {
+    name: 'interaction_user_resource_Id',
+    allowNull: true,
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+InteractionUserStack.hasMany(Comment, { foreignKey: 'interaction_user_stack_Id' });
+Comment.belongsTo(InteractionUserStack, {
+  foreignKey: {
+    name: 'interaction_user_stack_Id',
+    allowNull: true,
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Resource.belongsToMany(Stack, {
+  through: ResourceStack,
+  foreignKey: 'resource_Id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Stack.belongsToMany(Resource, {
+  through: ResourceStack,
+  foreignKey: 'stack_Id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Resource.belongsToMany(DevelopmentDirection, {
+  through: ResourceDevelopmentDirection,
+  foreignKey: 'resource_Id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+DevelopmentDirection.belongsToMany(Resource, {
+  through: ResourceDevelopmentDirection,
+  foreignKey: 'development_direction_Id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Rating.belongsToMany(Resource, {
+  through: RatingResource,
+  foreignKey: 'rating_Id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Resource.belongsToMany(Rating, {
+  through: RatingResource,
+  foreignKey: 'resource_Id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+
+
 module.exports = {
     User,
     Teacher,
@@ -80,5 +221,15 @@ module.exports = {
     Chapter,
     Skill,
     SkillChapter,
-    DisciplineSkill
+    DisciplineSkill,
+    LinkType,
+    Resource,
+    Stack,
+    InteractionUserResource,
+    InteractionUserStack,
+    Comment,
+    ResourceStack,
+    ResourceDevelopmentDirection,
+    Rating,
+    RatingResource
 };
