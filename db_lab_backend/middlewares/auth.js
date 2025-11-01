@@ -34,7 +34,20 @@ const isAdmin = async (req, res, next) => {
     }
 };
 
+const getUser = async (req, res, next) => {
+    try {
+        const token = req.headers['authorization'];
+        const decoded = jwt.verify(token, process.env.KEY);
+        const user = await User.findByPk(decoded.id);
+        req.user = user;
+        next();
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+}
+
 module.exports = {
     isStudent,
-    isAdmin
+    isAdmin,
+    getUser
 };

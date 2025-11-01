@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Express API",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/db_lab_backend/server.js",
+      "envFile": "${workspaceFolder}/db_lab_backend/.env",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "restart": true,
+      "runtimeExecutable": "node",
+      "console": "integratedTerminal",
+      "outFiles": ["${workspaceFolder}/**/*.js"]
+    }
+  ]
+}

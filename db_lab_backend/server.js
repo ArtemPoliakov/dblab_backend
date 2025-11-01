@@ -22,6 +22,9 @@ const teacherRoutes = require('./routes/teacher.js');
 const userRoutes = require('./routes/user.js');
 const authRoutes = require('./routes/auth.js');
 const cacheRoutes = require('./routes/cache.js');
+const resourceRoutes = require('./routes/resource.js');
+const interactionUserResourceRoutes = require('./routes/interaction_user_resource.js')
+const commentRoutes = require('./routes/comment.js')
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -42,6 +45,9 @@ app.use('/teacher', teacherRoutes);
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/cache', cacheRoutes);
+app.use('/resource', resourceRoutes);
+app.use('/interactionUserResource', interactionUserResourceRoutes);
+app.use('/comment', commentRoutes);
 
 db.sequelize.sync()
     .then(() => {
