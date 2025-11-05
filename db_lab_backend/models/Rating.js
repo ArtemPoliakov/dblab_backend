@@ -19,6 +19,10 @@ const Rating = db.sequelize.define('Rating', {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
+    },
+    forming_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
     }
 }, {
     tableName: 'rating',

@@ -7,16 +7,16 @@ CREATE TABLE link_type (
 
 CREATE TABLE resource (
     resource_Id INT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL UNIQUE CHECK(CHAR_LENGTH(TRIM(`name`)) > 0),
-    `description` TEXT NOT NULL CHECK(CHAR_LENGTH(TRIM(`description`)) BETWEEN 1 AND 8000),
-    link_to_resource VARCHAR(2083) NOT NULL CHECK(CHAR_LENGTH(TRIM(link_to_resource)) > 0),
+    `name` VARCHAR(255) NOT NULL UNIQUE,
+    `description` TEXT NOT NULL,
+    link_to_resource VARCHAR(2083) NOT NULL,
     likes_cache INT NOT NULL DEFAULT 0,
     views_cache INT NOT NULL DEFAULT 0,
     publish_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     origination_date DATE,
     is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     is_recommended BOOLEAN NOT NULL DEFAULT FALSE,
-    producer VARCHAR(255) CHECK(CHAR_LENGTH(TRIM(producer)) > 0),
+    producer VARCHAR(255),
     author_user_Id INT,
     link_type_Id INT,
 
@@ -26,8 +26,8 @@ CREATE TABLE resource (
 
 CREATE TABLE stack (
     stack_Id INT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL UNIQUE CHECK(CHAR_LENGTH(TRIM(`name`)) > 0),
-    `description` TEXT NOT NULL CHECK(CHAR_LENGTH(TRIM(`description`)) BETWEEN 1 AND 8000),
+    `name` VARCHAR(255) NOT NULL UNIQUE,
+    `description` TEXT NOT NULL,
     likes_cache INT NOT NULL DEFAULT 0,
     views_cache INT NOT NULL DEFAULT 0,
     creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -68,7 +68,7 @@ CREATE TABLE interaction_user_stack (
 
 CREATE TABLE comment (
     comment_Id INT PRIMARY KEY AUTO_INCREMENT,
-    `text` VARCHAR(800) NOT NULL CHECK(CHAR_LENGTH(TRIM(`text`)) > 0),
+    `text` VARCHAR(800) NOT NULL,
     likes INT NOT NULL DEFAULT 0,
     creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     interaction_user_resource_Id INT,
@@ -104,9 +104,10 @@ CREATE TABLE resourceDevelopment_direction (
 
 CREATE TABLE rating (
     rating_Id INT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL CHECK(CHAR_LENGTH(TRIM(`name`)) > 0),
-    rating_authority_link VARCHAR(2083) NOT NULL CHECK(CHAR_LENGTH(TRIM(rating_authority_link)) > 0),
-    publish_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `name` VARCHAR(255) NOT NULL,
+    rating_authority_link VARCHAR(2083) NOT NULL,
+    publish_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    forming_date DATE NOT NULL
 );
 
 CREATE TABLE ratingResource (
