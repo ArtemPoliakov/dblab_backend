@@ -1,6 +1,6 @@
-const InteractionUserResource = require("../models/InteractionUserResource");
-const Resource = require("../models/Resource");
-const User = require("../models/User")
+const InteractionUserStack = require("../models/InteractionUserStack");
+const Stack = require("../models/Stack");
+const User = require("../models/User");
 
 const create = async (req, res) => {
     try {
@@ -9,16 +9,18 @@ const create = async (req, res) => {
             is_viewed,
             is_in_view_later,
             is_in_favourites,
-            resource_Id
+            stack_Id
         } = req.body;
-        const interaction = await InteractionUserResource.create({ 
+        
+        const interaction = await InteractionUserStack.create({ 
             is_liked,
             is_viewed,
             is_in_view_later,
             is_in_favourites,
-            resource_Id,
+            stack_Id,
             user_Id: req.user.user_Id
         });
+        
         return res.status(201).json(interaction);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -31,9 +33,9 @@ const getFromDb = async (req, res) => {
 
 const deleter = async (req, res) => {
     try {
-        const { resource_Id, user_Id } = req.query;
+        const { stack_Id, user_Id } = req.query;
         
-        const result = await InteractionUserResource.destroy({ where: { resource_Id, user_Id } });
+        const result = await InteractionUserStack.destroy({ where: { stack_Id, user_Id } });
         return res.status(200).json(result);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -44,24 +46,24 @@ const get_all_for_user = async (req, res) => {
     try {
         const { user_Id } = req.params;
 
-        const interactions = await InteractionUserResource
-            .findAll({
-                where: {user_Id},
-                include: {
-                  model: Resource,
-                  attributes: ["name"]
-                }
-            });
-        const result = interactions.map(intraction => {
-            const { Resource, ...interactionData } = intraction.toJSON();
+        const interactions = await InteractionUserStack.findAll({
+            where: { user_Id },
+            include: {
+                model: Stack,
+                attributes: ["name"]
+            }
+        });
+        
+        const result = interactions.map(interaction => {
+            const { Stack, ...interactionData } = interaction.toJSON();
             return {
                 ...interactionData,
-                resource_name: Resource.name,
+                stack_name: Stack.name,
             };
         });
+        
         return res.status(200).json(result);
-    }
-    catch (error) {
+    } catch (error) {
        return res.status(500).json({ message: error.message });
     }
 }
@@ -73,11 +75,11 @@ const update = async (req, res) => {
             is_viewed,
             is_in_view_later,
             is_in_favourites,
-            resource_Id } = req.body;
+            stack_Id } = req.body;
         const user_Id = req.user.user_Id;
         
-        const interaction = await InteractionUserResource.findOne({ 
-            where: { resource_Id, user_Id } 
+        const interaction = await InteractionUserStack.findOne({ 
+            where: { stack_Id, user_Id } 
         });
 
         if (!interaction) {
@@ -104,9 +106,9 @@ const update = async (req, res) => {
             const isNowLiked = !!updates.is_liked;
 
             if (wasLiked && !isNowLiked) {
-                await Resource.decrement('likes_cache', { by: 1, where: { resource_Id } });
+                await Stack.decrement('likes_cache', { by: 1, where: { stack_Id } });
             } else if (!wasLiked && isNowLiked) {
-                await Resource.increment('likes_cache', { by: 1, where: { resource_Id } });
+                await Stack.increment('likes_cache', { by: 1, where: { stack_Id } });
             }
         }
 
@@ -114,9 +116,9 @@ const update = async (req, res) => {
             const isNowViewed = !!updates.is_viewed;
 
             if (wasViewed && !isNowViewed) {
-                await Resource.decrement('views_cache', { by: 1, where: { resource_Id } });
+                await Stack.decrement('views_cache', { by: 1, where: { stack_Id } });
             } else if (!wasViewed && isNowViewed) {
-                await Resource.increment('views_cache', { by: 1, where: { resource_Id } });
+                await Stack.increment('views_cache', { by: 1, where: { stack_Id } });
             }
         }
 
@@ -128,17 +130,17 @@ const update = async (req, res) => {
 
 const create_or_update = async (req, res) => {
      try {
-        const { resource_Id } = req.body;
+        const { stack_Id } = req.body;
         const user_Id = req.user.user_Id;
 
-        let exists = await InteractionUserResource
-            .findOne({
-                where: {resource_Id, user_Id},
-                attributes: ["interaction_user_resource_Id"]}) != null;
+        let exists = await InteractionUserStack.findOne({
+            where: { stack_Id, user_Id },
+            attributes: ["interaction_user_stack_Id"]
+        }) != null;
+
         if(exists) {
             return update(req, res);
-        }
-        else {
+        } else {
             return create(req, res);
         }
     } catch (error) {

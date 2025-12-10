@@ -220,3 +220,25 @@ VALUES
 -- MySQL Tutorial — Official Developer Portal
 (6, 7),
 (6, 1);
+
+
+-- Count likes and views cache for each resource
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE resource r
+LEFT JOIN (
+    SELECT 
+        resource_Id,
+        SUM(CASE WHEN is_liked = b'1' THEN 1 ELSE 0 END) AS like_count,
+        SUM(CASE WHEN is_viewed = b'1' THEN 1 ELSE 0 END) AS view_count
+    FROM interaction_user_resource
+    GROUP BY resource_Id
+) iur ON r.resource_Id = iur.resource_Id
+SET 
+    r.likes_cache = COALESCE(iur.like_count, 0),
+    r.views_cache = COALESCE(iur.view_count, 0)
+WHERE r.resource_Id > 0;
+
+SET SQL_SAFE_UPDATES = 1;

@@ -25,7 +25,9 @@ const cacheRoutes = require('./routes/cache.js');
 const resourceRoutes = require('./routes/resource.js');
 const interactionUserResourceRoutes = require('./routes/interaction_user_resource.js')
 const commentRoutes = require('./routes/comment.js')
-
+const linkTypeRoutes = require('./routes/linkType.js');
+const stackRoutes = require('./routes/stack.js');
+const interactionUserStackRoutes = require('./routes/interaction_user_stack.js');
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
@@ -48,6 +50,9 @@ app.use('/cache', cacheRoutes);
 app.use('/resource', resourceRoutes);
 app.use('/interactionUserResource', interactionUserResourceRoutes);
 app.use('/comment', commentRoutes);
+app.use('/linkType', linkTypeRoutes);
+app.use('/stack', stackRoutes);
+app.use("/interactionUserStack", interactionUserStackRoutes);
 
 db.sequelize.sync()
     .then(() => {
